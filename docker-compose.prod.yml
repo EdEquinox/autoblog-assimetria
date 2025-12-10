@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: blog-backend-prod
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+      - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY:-}
+    networks:
+      - blog-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: blog-frontend-prod
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - blog-network
+    restart: unless-stopped
+
+networks:
+  blog-network:
+    driver: bridge
