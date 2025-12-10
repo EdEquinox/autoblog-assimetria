@@ -2,7 +2,7 @@ import pkg from 'pg';
 const { Pool } = pkg;
 
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || '13.62.230.242',
   port: process.env.DB_PORT || 5432,
   database: process.env.DB_NAME || 'blog',
   user: process.env.DB_USER || 'user',
