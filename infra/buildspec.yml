@@ -4,18 +4,18 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 904027687032.dkr.ecr.us-east-1.amazonaws.com
-      - REPO_URL=904027687032.dkr.ecr.us-east-1.amazonaws.com
+      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 904027687032.dkr.ecr.eu-north-1.amazonaws.com
+      - REPO_URL=904027687032.dkr.ecr.eu-north-1.amazonaws.com
       - IMAGE_TAG=latest
   build:
     commands:
       - echo Building backend...
-      - docker build -t $REPO_URL/blog-backend:$IMAGE_TAG ./backend
+      - docker build -t $REPO_URL/autoblog/backend:$IMAGE_TAG ./backend
       - echo Building frontend...
-      - docker build -t $REPO_URL/blog-frontend:$IMAGE_TAG ./frontend
+      - docker build -t $REPO_URL/autoblog/frontend:$IMAGE_TAG ./frontend
   post_build:
     commands:
       - echo Pushing images to ECR...
-      - docker push $REPO_URL/blog-backend:$IMAGE_TAG
-      - docker push $REPO_URL/blog-frontend:$IMAGE_TAG
+      - docker push $REPO_URL/autoblog/backend:$IMAGE_TAG
+      - docker push $REPO_URL/autoblog/frontend:$IMAGE_TAG
       - echo Build completed successfully.
