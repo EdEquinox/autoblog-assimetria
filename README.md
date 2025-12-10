@@ -48,6 +48,42 @@ docker-compose down
 ```bash
 # Todos os serviços
 docker-compose logs -f
+```
+
+## 🌐 Deploy para AWS
+
+Ver **[AWS_DEPLOYMENT.md](./AWS_DEPLOYMENT.md)** para guia completo de deployment.
+
+### Configuração Rápida
+
+1. **Variáveis de Ambiente**:
+```bash
+# .env.prod
+VITE_API_URL=http://seu-backend-ip:3001/api  # URL do backend
+FRONTEND_URL=http://seu-frontend-url         # URL do frontend (para CORS)
+HF_TOKEN=seu-hf-token
+DB_HOST=seu-rds-endpoint
+DB_PASSWORD=senha-forte
+```
+
+2. **Deploy**:
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+3. **Verificar**:
+```bash
+bash test-api-communication.sh
+```
+
+## 🔧 Troubleshooting AWS
+
+| Problema | Causa | Solução |
+|----------|-------|---------|
+| Frontend não vê artigos | URL errada do backend | Verificar `VITE_API_URL` em `.env` |
+| CORS error | Origem não autorizada | Definir `FRONTEND_URL` corretamente |
+| API timeout | Proxy nginx lento | Aumentar timeout no nginx.conf |
+| DeepSeek sem responder | Token inválido | Verificar `HF_TOKEN` |
 
 # Apenas backend
 docker-compose logs -f backend

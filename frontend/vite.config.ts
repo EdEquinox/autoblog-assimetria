@@ -10,5 +10,14 @@ export default defineConfig({
     watch: {
       usePolling: true
     }
+  },
+  // Build configuration for production
+  build: {
+    outDir: 'dist',
+    sourcemap: true
+  },
+  // Environment variables
+  define: {
+    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || '/api')
   }
 })

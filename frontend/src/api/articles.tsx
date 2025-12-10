@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://13.62.230.242:3001/api';
+// Get API URL from environment or use relative path
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
+console.log('Using API_BASE_URL:', API_BASE_URL);
 
 export const getArticles = async () => {
   try {
