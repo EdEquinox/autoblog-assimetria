@@ -1,45 +1,77 @@
 ﻿version: '3.8'
 
 services:
-  db:
-    image: postgres:15
-    container_name: blog-db
+  postgres:
+    image: postgres:15-alpine
+    container_name: blog-postgres
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: blog
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      POSTGRES_USER: ${DB_USER:-user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-blog}
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - blog-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
-    build: ./backend
+    build: ../backend
     container_name: blog-backend
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
-      - DB_HOST=db
-      - DB_USER=user
-      - DB_PASS=password
-      - DB_NAME=blog
-      - PORT=3000
-    depends_on:
-      - db
+      - PORT=3001
+      - NODE_ENV=development
+      - HF_TOKEN=${HF_TOKEN:-}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-blog}
+      - DB_USER=${DB_USER:-user}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
     volumes:
-      - ./backend:/app
+      - ../backend:/app
       - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npm run dev
+    networks:
+      - blog-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   frontend:
-    build: ./frontend
+    build: ../frontend
     container_name: blog-frontend
     ports:
       - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3001/api
     volumes:
-      - ./frontend:/app
+      - ../frontend:/app
       - /app/node_modules
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    networks:
+      - blog-network
+    command: npm run dev
 
 volumes:
-  pgdata:
+  postgres_data:
+
+networks:
+  blog-network:
+    driver: bridge
+
+
