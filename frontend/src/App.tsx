@@ -89,7 +89,7 @@ function App() {
   return (
     <div className="container">
       <header className="header">
-        <h1>Artigos</h1>
+        <h1>Artigios</h1>
         <p className="subtitle">Explore nossos artigos mais recentes</p>
         
         <div className="generate-section">
