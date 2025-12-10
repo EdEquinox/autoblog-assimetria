@@ -1,266 +1,193 @@
-# 📰 Blog Automático com IA
+# 📰 AI Blog
 
-Sistema completo de blog com geração automática de artigos usando APIs gratuitas de IA.
+Automatic blog system that generates articles using artificial intelligence. Built with React, Express.js, PostgreSQL, and Docker.
 
-## 🚀 Features
+## ✨ Features
 
-- ✅ **Backend** - API REST com Express.js
-- ✅ **Frontend** - React + TypeScript + Vite
-- ✅ **Geração de Artigos com IA** - Múltiplas opções gratuitas
-- ✅ **Docker Compose** - Setup completo em um comando
-- ✅ **Sem banco de dados** - Armazenamento em memória (fácil de adicionar BD)
+- **AI-Powered Content** - DeepSeek-V3.2 via Hugging Face API
+- **Full Stack** - React 19 + TypeScript + Express.js + PostgreSQL
+- **Docker Ready** - Complete setup with Docker Compose
+- **Responsive UI** - Modern design for all devices
+- **REST API** - Complete CRUD operations for articles
+- **Production Ready** - AWS EC2 deployment included
 
-## 🛠️ Tecnologias
+## 🚀 Quick Start
 
-### Backend
-- Node.js + Express
-- Axios (substituído por Fetch no frontend)
-- node-cron (agendamento)
-- Hugging Face API / JSONPlaceholder / Fallback
-
-### Frontend
-- React 18
-- TypeScript
-- Vite
-- CSS moderno
-
-## 🐳 Quick Start com Docker
-
-### 1. Iniciar tudo com Docker Compose
+### With Docker (Recommended)
 
 ```bash
-docker-compose up --build
+# Start all services
+docker-compose up
+
+# Access the app
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:3001/api/articles
+# Health Check: http://localhost:3001/api/health
 ```
 
-Acesse:
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3001/api/articles
-- **Health Check**: http://localhost:3001/api/health
+### Without Docker
 
-### 2. Parar containers
-
-```bash
-docker-compose down
-```
-
-### 3. Ver logs
-
-```bash
-# Todos os serviços
-docker-compose logs -f
-```
-
-## 🌐 Deploy para AWS
-
-Ver **[AWS_DEPLOYMENT.md](./AWS_DEPLOYMENT.md)** para guia completo de deployment.
-
-### Configuração Rápida
-
-1. **Variáveis de Ambiente**:
-```bash
-# .env.prod
-VITE_API_URL=http://seu-backend-ip:3001/api  # URL do backend
-FRONTEND_URL=http://seu-frontend-url         # URL do frontend (para CORS)
-HF_TOKEN=seu-hf-token
-DB_HOST=seu-rds-endpoint
-DB_PASSWORD=senha-forte
-```
-
-2. **Deploy**:
-```bash
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-3. **Verificar**:
-```bash
-bash test-api-communication.sh
-```
-
-## 🔧 Troubleshooting AWS
-
-| Problema | Causa | Solução |
-|----------|-------|---------|
-| Frontend não vê artigos | URL errada do backend | Verificar `VITE_API_URL` em `.env` |
-| CORS error | Origem não autorizada | Definir `FRONTEND_URL` corretamente |
-| API timeout | Proxy nginx lento | Aumentar timeout no nginx.conf |
-| DeepSeek sem responder | Token inválido | Verificar `HF_TOKEN` |
-
-# Apenas backend
-docker-compose logs -f backend
-
-# Apenas frontend
-docker-compose logs -f frontend
-```
-
-## 💻 Desenvolvimento Local (sem Docker)
-
-### Backend
-
+**Backend:**
 ```bash
 cd backend
 npm install
-npm run dev
+npm run dev      # Runs on port 3001
 ```
 
-Servidor em `http://localhost:3001`
-
-### Frontend
-
+**Frontend:**
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev      # Runs on port 5173
 ```
 
-Aplicação em `http://localhost:5173`
+## 🔌 Tech Stack
 
-## 🔧 Configuração
-
-### Variáveis de Ambiente (Opcional)
-
-Criar `.env` na raiz:
-
-```env
-# Hugging Face API (opcional)
-HUGGINGFACE_API_KEY=hf_xxxxxxxxxxxxx
-```
-
-Para obter chave gratuita:
-1. Ir em https://huggingface.co/settings/tokens
-2. Criar novo token (acesso de leitura)
-3. Adicionar ao `.env`
+| Layer | Technologies |
+|-------|--------------|
+| **Frontend** | React 19, TypeScript 5.9, Vite 7.2, Fetch API |
+| **Backend** | Node.js 20, Express 4.18, PostgreSQL 15 |
+| **AI** | Hugging Face API (DeepSeek-V3.2) |
+| **DevOps** | Docker, Docker Compose, AWS EC2 |
 
 ## 📡 API Endpoints
 
-### GET /api/articles
-Lista todos os artigos
 ```bash
-curl http://localhost:3001/api/articles
+GET    /api/articles              # List all articles
+GET    /api/articles/:id          # Get specific article
+POST   /api/articles/generate     # Generate new article with AI
+DELETE /api/articles/:id          # Delete article
+GET    /api/health                # Health check
 ```
 
-### GET /api/articles/:id
-Detalhes de um artigo
-```bash
-curl http://localhost:3001/api/articles/1
-```
-
-### POST /api/articles/generate
-Gera novo artigo
+**Example - Generate Article:**
 ```bash
 curl -X POST http://localhost:3001/api/articles/generate \
   -H "Content-Type: application/json" \
-  -d '{"topic": "Docker", "style": "informative"}'
+  -d '{"title": "AI Trends", "topic": "technology"}'
 ```
 
-### DELETE /api/articles/:id
-Deleta artigo
+## 🔧 Configuration
+
+### Environment Variables (Local)
+
+Create `.env` in project root:
 ```bash
-curl -X DELETE http://localhost:3001/api/articles/1
+# Database
+DB_USER=user
+DB_PASSWORD=password
+DB_NAME=blog
+DB_HOST=postgres
+
+# AI
+HF_TOKEN=hf_your_huggingface_token
+
+# API
+PORT=3001
+NODE_ENV=development
+VITE_API_URL=http://localhost:3001/api
 ```
 
-## 🎨 Interface do Frontend
+Get free Hugging Face token: https://huggingface.co/settings/tokens
 
-- **Página Principal**: Grid de artigos com cards bonitos
-- **Detalhes**: Clique em qualquer artigo para ver conteúdo completo
-- **Responsivo**: Funciona em desktop, tablet e mobile
-- **Estados**: Loading, erro, vazio
+### Production (AWS EC2)
 
-## 🤖 Opções de IA
+See [ARCHITECTURE.md](./docs/ARCHITECTURE.md#production-environment-aws-ec2) for complete deployment guide.
 
-### 1. Hugging Face (Recomendado)
-- Modelos avançados de linguagem
-- Requer: `HUGGINGFACE_API_KEY`
-- Limite: ~30 req/min
+```bash
+# SSH to EC2 instance
+ssh -i key.pem ec2-user@your-ip
 
-### 2. JSONPlaceholder
-- API pública para testes
-- Sem autenticação
-- Mock data realista
+# Clone repo and deploy
+git clone https://github.com/your-user/your-repo.git
+cd your-repo
+chmod +x infra/scripts/init-ec2.sh
+./infra/scripts/init-ec2.sh  # Setup (once)
+./infra/scripts/deploy.sh    # Deploy app
+```
 
-### 3. Fallback Local
-- Gerador de artigos local
-- Sempre disponível
-- Sem dependências externas
-
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 assimetria/
-├── backend/
+├── frontend/              # React + TypeScript
 │   ├── src/
-│   │   ├── index.js           # Servidor Express
-│   │   ├── routes/
-│   │   │   └── articles.js    # Rotas da API
-│   │   └── services/
-│   │       ├── aiClient.js    # Cliente de IA
-│   │       └── articleJob.js  # Agendamento
-│   ├── Dockerfile
+│   │   ├── App.tsx       # Main component
+│   │   ├── api/          # API client (Fetch)
+│   │   └── App.css       # Styles
 │   └── package.json
-├── frontend/
+├── backend/              # Express.js API
 │   ├── src/
-│   │   ├── App.tsx            # Componente principal
-│   │   ├── App.css            # Estilos
-│   │   └── api/
-│   │       └── articles.tsx   # Cliente API
-│   ├── Dockerfile
+│   │   ├── index.js      # Server
+│   │   ├── routes/       # API routes
+│   │   └── services/     # Business logic
 │   └── package.json
-├── docker-compose.yml
-└── README.md
+├── infra/               # Deployment scripts
+│   └── scripts/
+│       ├── init-ec2.sh  # EC2 setup
+│       └── deploy.sh    # App deployment
+├── docs/
+│   └── ARCHITECTURE.md  # Full architecture guide
+└── docker-compose.yml   # Local dev orchestration
 ```
 
-## 🔍 Troubleshooting
+## 🚨 Troubleshooting
 
-### Containers não iniciam
+| Issue | Solution |
+|-------|----------|
+| **Disk full** | `docker system prune -a -f` |
+| **Cached images** | `docker-compose pull && docker-compose up --force-recreate` |
+| **Frontend can't reach backend** | Check `VITE_API_URL` in `.env` or environment |
+| **Database connection fails** | Verify `DB_HOST`, password, and postgres_data volume exists |
+| **AI not generating articles** | Check `HF_TOKEN` is valid and has internet connectivity |
+
+## 📚 Documentation
+
+- **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - Complete system design and deployment guide
+- **[infra/scripts/init-ec2.sh](./infra/scripts/init-ec2.sh)** - EC2 instance initialization
+- **[infra/scripts/deploy.sh](./infra/scripts/deploy.sh)** - Application deployment automation
+
+## 🛠️ Useful Commands
+
 ```bash
-docker-compose down -v
+# View logs
+docker-compose logs -f backend
+docker-compose logs -f frontend
+
+# Rebuild services
 docker-compose up --build
-```
 
-### Frontend não conecta ao backend
-- Verificar se backend está rodando: http://localhost:3001/api/health
-- Verificar CORS no backend
-- Verificar porta 3001 disponível
-
-### Artigos não aparecem
-- Backend gera 5 artigos na primeira requisição
-- Esperar ~10 segundos no primeiro acesso
-- Ver logs: `docker-compose logs backend`
-
-### Hot reload não funciona no Docker
-- Configurado com `usePolling: true` no Vite
-- Volumes montados corretamente
-
-## 🚀 Próximos Passos
-
-- [ ] Adicionar PostgreSQL/MongoDB
-- [ ] Sistema de autenticação
-- [ ] Comentários nos artigos
-- [ ] Upload de imagens
-- [ ] SEO otimizado
-- [ ] Paginação
-- [ ] Busca de artigos
-- [ ] Tags e categorias
-
-## 📝 Scripts Úteis
-
-```bash
-# Build para produção
-docker-compose -f docker-compose.prod.yml up --build
-
-# Rebuild apenas um serviço
-docker-compose up --build backend
-
-# Remover tudo (containers, volumes, redes)
+# Clean up everything
 docker-compose down -v --remove-orphans
 
-# Entrar no container
+# Access backend container
 docker exec -it blog-backend sh
+
+# Check health
+curl http://localhost:3001/api/health
 ```
 
-## 📄 Licença
+## 🚀 Deployment Options
+
+1. **Docker Compose (Current)** - Simple, all-in-one
+2. **AWS EC2** - Production deployment with bash scripts
+
+## 📝 Next Steps
+
+- [ ] Database backups and monitoring
+- [ ] SSL/HTTPS certificate (AWS ACM)
+- [ ] Load balancing (AWS ALB)
+- [ ] Auto-scaling groups
+- [ ] CI/CD pipeline (GitHub Actions or AWS CodePipeline)
+- [ ] User authentication system
+- [ ] Article search and filtering
+- [ ] Content caching (CloudFront)
+
+## 📄 License
 
 MIT
 
-## 👤 Autor
+## 👤 Author
 
-Projeto de teste - Entrevista Assimetria
+José Marques @ Assimetria Interview Project - December 2025
+
