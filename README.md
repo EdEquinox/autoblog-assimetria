@@ -172,17 +172,6 @@ curl http://localhost:3001/api/health
 1. **Docker Compose (Current)** - Simple, all-in-one
 2. **AWS EC2** - Production deployment with bash scripts
 
-## 📝 Next Steps
-
-- [ ] Database backups and monitoring
-- [ ] SSL/HTTPS certificate (AWS ACM)
-- [ ] Load balancing (AWS ALB)
-- [ ] Auto-scaling groups
-- [ ] CI/CD pipeline (GitHub Actions or AWS CodePipeline)
-- [ ] User authentication system
-- [ ] Article search and filtering
-- [ ] Content caching (CloudFront)
-
 ## 📄 License
 
 MIT
