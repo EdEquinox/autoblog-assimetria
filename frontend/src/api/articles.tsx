@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://13.62.230.242:3001/api';
 
 export const getArticles = async () => {
   try {
